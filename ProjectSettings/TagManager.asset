@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PaintArea
   - PaintingFinger
+  - Transit
   layers:
   - Default
   - TransparentFX
