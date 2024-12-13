@@ -9,5 +9,8 @@ public class PaintingManager : MonoBehaviour
     public void SwapColor(Color color)
     {
         curColor = color;
+        fingers[0].color = color;
     }
+    public Material[] fingers;
+    
 }
