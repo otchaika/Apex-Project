@@ -6,6 +6,8 @@ public class PaintArea : MonoBehaviour
 {
     public XRController leftController;
     public XRController rightController;
+    public GameObject leftFinger;
+    public GameObject rightFinger;
     public Texture2D maskTexture;
     public Color paintColor = Color.red;
     public int brushSize = 10;
@@ -14,7 +16,7 @@ public class PaintArea : MonoBehaviour
 
     [SerializeField] private InputActionReference leftTriggerRef;
     [SerializeField] private InputActionReference rightTriggerRef;
-
+    private Color curColor;
     private Renderer meshRenderer;
 
     private void Awake()
@@ -37,8 +39,9 @@ public class PaintArea : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // Check if the other object is the controller
-        if (other.gameObject.CompareTag("PaintingFinger"))
+        if (other.gameObject.CompareTag("PaintingFinger") && other.gameObject.GetComponent<Finger>())
         {
+            Debug.Log("finger is painting");
             HandlePaintingOnCollision(other);
             UpdateMaterial();
         }
@@ -47,14 +50,23 @@ public class PaintArea : MonoBehaviour
     private void HandlePaintingOnCollision(Collider controllerCollider)
     {
         // Get the InputActionReference for the corresponding controller
-        InputActionReference triggerRef = (controllerCollider.gameObject == leftController.gameObject)
-            ? rightTriggerRef
-            : leftTriggerRef
+        InputActionReference triggerRef = (controllerCollider.gameObject == leftFinger)
+            ? leftTriggerRef
+            : rightTriggerRef
             ;
-
+        Debug.Log(triggerRef.ToString());
         // Check if the trigger is pressed
         if (triggerRef.action.ReadValue<float>() > 0.5f)
         {
+            if (triggerRef == leftTriggerRef)
+            {
+                curColor = manager.curColorLeft;
+            }
+                if (triggerRef == rightTriggerRef)
+                {
+                    curColor = manager.curColorRight;
+                }
+
             strength = triggerRef.action.ReadValue<float>();
             // Get the collision contact point
             Vector3 contactPoint = controllerCollider.ClosestPointOnBounds(transform.position);
@@ -91,7 +103,7 @@ public class PaintArea : MonoBehaviour
                 {
                     float falloff = Mathf.Clamp01(1.0f - (distance / brushSize));
                     Color existingColor = maskTexture.GetPixel(pixelX, pixelY);
-                    paintColor = manager.curColor;
+                    paintColor = curColor;
 
                     Color blendedColor = Color.Lerp(existingColor, paintColor, falloff * paintColor.a);
                     maskTexture.SetPixel(pixelX, pixelY, blendedColor);
