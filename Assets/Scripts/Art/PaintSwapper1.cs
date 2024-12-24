@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class PaintSwapper : MonoBehaviour
+public class PaintSwapper1 : MonoBehaviour
 {
     public PaintingManager manager;
 
@@ -24,9 +24,6 @@ public class PaintSwapper : MonoBehaviour
                 manager.SwapColor(thisColor, "left");
             else if (other.gameObject.name.Contains("Right"))  
                 manager.SwapColor(thisColor,"right");
-            //Checking the painting collider of the brush
-            else if (other.gameObject.name.Contains("paint_coll"))
-                manager.SwapColor(thisColor, "brush");
         }
             
 

@@ -4,20 +4,21 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PaintArea
-  - PaintingFinger
+  - Mushroom
   - Transit
+  - PaintingFinger
+  - PaintArea
   - SmallStone
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - Finger
-  - DirectInteractable
-  - Player
+  - Hair
+  - Ferrule
+  - Brush
   - 
   - 
   - 

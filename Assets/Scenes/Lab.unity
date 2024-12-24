@@ -2112,7 +2112,7 @@ MonoBehaviour:
     animateRings: 0
     timeScale: 1
   radius: 3
-  distance: 0.05
+  distance: 32.004013
   noiseScaleWorld: 0.135
   noiseScaleScreen: 3.38
 --- !u!114 &1746719009

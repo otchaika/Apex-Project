@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class PaintArea : MonoBehaviour
@@ -45,6 +46,14 @@ public class PaintArea : MonoBehaviour
             HandlePaintingOnCollision(other);
             UpdateMaterial();
         }
+        //Check if the other object is the brush
+        else if (other.gameObject.CompareTag("PaintingFinger") && other.transform.parent.name == "brush_hair")
+        {
+            Debug.Log(other.transform.parent.name);
+            Debug.Log("brush_hair is interacting");
+            HandleBrushHairCollision(other);
+            UpdateMaterial();
+        }
     }
     float strength = 0f;
     private void HandlePaintingOnCollision(Collider controllerCollider)
@@ -66,12 +75,19 @@ public class PaintArea : MonoBehaviour
                 {
                     curColor = manager.curColorRight;
                 }
-
             strength = triggerRef.action.ReadValue<float>();
             // Get the collision contact point
             Vector3 contactPoint = controllerCollider.ClosestPointOnBounds(transform.position);
             PaintOnTexture(contactPoint);
         }
+    }
+    //Brush collision
+    private void HandleBrushHairCollision(Collider brushCollider)
+    {
+        strength = 1f; 
+        curColor = manager.curColorBrush;
+        Vector3 contactPoint = brushCollider.ClosestPointOnBounds(transform.position);
+        PaintOnTexture(contactPoint);
     }
 
     private void PaintOnTexture(Vector3 hitPoint)

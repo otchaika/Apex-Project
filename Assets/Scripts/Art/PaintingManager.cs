@@ -6,8 +6,14 @@ public class PaintingManager : MonoBehaviour
 {
     public Color curColorLeft = Color.clear;
     public Color curColorRight = Color.clear;
+    //Brush color
+    public Color curColorBrush  = Color.clear;
+
     public Material leftFinger;
     public Material rightFinger;
+    //Brush material
+    public Material brush;
+
     public void SwapColor(Color color, string hand)
     {
         Debug.Log("manager swapped color");
@@ -17,15 +23,16 @@ public class PaintingManager : MonoBehaviour
             leftFinger.color = color;
         }
         if (hand == "right") { 
-            
 
             curColorRight = BlendAdditive(curColorRight, color, 0.5f);
             rightFinger.color = curColorRight;
         }
-
-
-
-
+        //Checking the brush
+        if (hand == "brush")
+        {
+            curColorBrush = BlendAdditive(curColorBrush, color, 0.5f);
+            brush.color = curColorBrush;
+        }
     }
 
     Color BlendAdditive(Color color1, Color color2, float mixAmount)
