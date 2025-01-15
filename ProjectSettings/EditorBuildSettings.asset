@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Lab.unity
     guid: f54ed79f296f8514d87289f689a66162
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Cave_Cooking.unity
     guid: e17f802502fe3d8439ee7052b73594f6
   - enabled: 1
