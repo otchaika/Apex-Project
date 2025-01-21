@@ -14,7 +14,7 @@ public class PaintArea : MonoBehaviour
     public int brushSize = 10;
     public Material mat;
     public PaintingManager manager;
-
+    public Animator anim;
     [SerializeField] private InputActionReference leftTriggerRef;
     [SerializeField] private InputActionReference rightTriggerRef;
     private Color curColor;
@@ -22,11 +22,19 @@ public class PaintArea : MonoBehaviour
 
     private void Awake()
     {
+        manager.animatePaintings += StartAnimating;
         // Initialize the mask texture
         maskTexture = CreateMaskTexture(1024, 1024);
         meshRenderer = GetComponent<Renderer>();
     }
-
+    private void StartAnimating()
+    {
+        if (anim != null)
+        {
+            anim.SetBool("isAnimating", true);
+        }
+        
+    }
     private Texture2D CreateMaskTexture(int width, int height)
     {
         Texture2D maskTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);

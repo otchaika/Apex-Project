@@ -2,13 +2,13 @@ Shader "Custom/PaintShader"
 {
     Properties
     {
-        _MainTex ("Base Texture", 2D) = "white" {}
+        _MainTex ("Base Texture", 2D) = "white" {} // Base texture with transparency
         _MaskTex ("Mask Texture", 2D) = "black" {} // Mask texture for painting
-        _PaintColor ("Paint Color", Color) = (1,0,0,1) // Red color by default
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha // Enable blending for transparency
         Pass
         {
             CGPROGRAM
@@ -18,9 +18,6 @@ Shader "Custom/PaintShader"
 
             sampler2D _MainTex;
             sampler2D _MaskTex;
-            float4 _PaintColor;
-            float4 _MainTex_ST;
-            float4 _MaskTex_ST;
 
             struct appdata
             {
@@ -48,14 +45,18 @@ Shader "Custom/PaintShader"
                 half4 baseColor = tex2D(_MainTex, i.uv);
                 half4 maskColor = tex2D(_MaskTex, i.uv);
 
-                // Use alpha from the mask texture to blend the paint color
-                // If the mask has alpha (non-zero), apply paint; otherwise, use base color
-                half4 finalColor = (maskColor.a > 0.0) ? maskColor : baseColor;
+                // Determine the final RGB color:
+                // Show mask color if mask has alpha, otherwise show base texture color
+                float3 finalColor = (maskColor.a > 0.0) ? maskColor.rgb : baseColor.rgb;
 
-                return finalColor;
+                // Determine the final alpha:
+                // Fully transparent only if BOTH are transparent (alpha = 0.0)
+                float finalAlpha = max(baseColor.a, maskColor.a);
+
+                return half4(finalColor, finalAlpha);
             }
             ENDCG
         }
     }
-    FallBack "Diffuse"
+    FallBack "Transparent"
 }

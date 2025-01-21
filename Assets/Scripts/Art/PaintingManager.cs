@@ -1,6 +1,10 @@
+using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class PaintingManager : MonoBehaviour
 {
@@ -13,7 +17,13 @@ public class PaintingManager : MonoBehaviour
     public Material rightFinger;
     //Brush material
     public Material brush;
-
+    public event Action animatePaintings;
+    public InputActionReference finishRef;
+    private void Awake()
+    {
+        finishRef.action.Enable();
+        finishRef.action.performed += FinishPainting;
+    }
     public void SwapColor(Color color, string hand)
     {
         Debug.Log("manager swapped color");
@@ -45,6 +55,13 @@ public class PaintingManager : MonoBehaviour
             Mathf.Clamp01(color1.b * inverseMix + color2.b * mixAmount),
             Mathf.Clamp01(color1.a * inverseMix + color2.a * mixAmount)
         );
+    }
+    void FinishPainting(InputAction.CallbackContext context)
+    {
+        Debug.Log("A pressed");
+   
+        animatePaintings?.Invoke();
+
     }
 
 
