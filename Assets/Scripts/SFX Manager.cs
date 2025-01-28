@@ -8,14 +8,12 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip Herb_grinding;
     [SerializeField] private AudioClip Coal_grinding;
     [SerializeField] private AudioClip Clay_grinding;
-    [SerializeField] private AudioClip Herb;
-    [SerializeField] private AudioClip Coal;
-    [SerializeField] private AudioClip Clay;
     [SerializeField] private AudioClip Pigments;
     [SerializeField] private AudioClip Picking;
     [SerializeField] private AudioClip Paitning;
+    [SerializeField] private AudioClip PaintSwapper;
     [SerializeField] private AudioClip BrushAttaching;
-    [SerializeField] private AudioClip FuulyAssembeled;
+    [SerializeField] private AudioClip FullyAssembeled;
     [SerializeField] private AudioClip Dropped;
     [SerializeField] private AudioClip Water;
     AudioSource sfx;
@@ -48,11 +46,6 @@ public class SFXManager : MonoBehaviour
             sfx.clip = Water;
             sfx.PlayOneShot(sfx.clip);
         }
-        else if (collision.gameObject.CompareTag("Pigments"))
-        {
-            sfx.clip = Pigments;
-            sfx.PlayOneShot(sfx.clip);
-        }
         else if (collision.gameObject.CompareTag("Environement"))
         {
             if (collision.relativeVelocity.magnitude > 2)
@@ -62,5 +55,14 @@ public class SFXManager : MonoBehaviour
             }
         }
 
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Pigments"))
+        {
+            sfx.clip = Pigments;
+            sfx.PlayOneShot(sfx.clip);
+        }
     }
 }
