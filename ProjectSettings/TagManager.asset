@@ -9,6 +9,12 @@ TagManager:
   - PaintingFinger
   - PaintArea
   - SmallStone
+  - Herb
+  - Coal
+  - Clay
+  - Water
+  - Pigments
+  - Environement
   layers:
   - Default
   - TransparentFX
