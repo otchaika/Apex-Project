@@ -15,6 +15,7 @@ TagManager:
   - Water
   - Pigments
   - Environement
+  - Waypoint
   layers:
   - Default
   - TransparentFX
@@ -26,8 +27,8 @@ TagManager:
   - Ferrule
   - Brush
   - Reference
-  - 
-  - 
+  - PlayerSpace
+  - NPC
   - 
   - 
   - 

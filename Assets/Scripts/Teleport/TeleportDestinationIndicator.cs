@@ -54,54 +54,53 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             }
         }
 
+        [SerializeField]
+        [Tooltip("The minimum dot product threshold to show the pointer (1 means looking directly at the anchor).")]
+        private float m_LookThreshold = 0.9f; // Чем ближе к 1, тем точнее взгляд должен быть направлен на anchor
+
         private Transform m_PointerInstance;
 
-        private void OnEnable()
-        {
-            UpdatePointer();
-        }
-
-        private void Start()
+        private void Update()
         {
             UpdatePointer();
         }
 
         private void UpdatePointer()
         {
-            // Destroy existing pointer instance if it exists.
-            if (m_PointerInstance != null)
-            {
-                Destroy(m_PointerInstance.gameObject);
-                m_PointerInstance = null;
-            }
-
-            // Check if anchor and prefab are set.
-            if (m_Anchor == null || m_PointerPrefab == null)
+            if (m_Anchor == null || m_PointerPrefab == null || Camera.main == null)
                 return;
 
-            // Instantiate the pointer prefab.
-            m_PointerInstance = Instantiate(m_PointerPrefab).transform;
-
-            // Get camera transform for orientation.
             var cameraTrans = Camera.main.transform;
             var cameraPosition = cameraTrans.position;
+            var cameraForward = cameraTrans.forward;
             var anchorPosition = m_Anchor.position;
 
-            // Calculate direction from camera to anchor, ignoring depth.
-            var directionInScreenSpace = cameraTrans.InverseTransformDirection(anchorPosition - cameraPosition);
-            directionInScreenSpace.z = 0f;
-            var pointerDirection = cameraTrans.TransformDirection(directionInScreenSpace).normalized;
+            // Вектор от камеры к anchor
+            var directionToAnchor = (anchorPosition - cameraPosition).normalized;
 
-            // Position and orient the pointer.
-            m_PointerInstance.position = anchorPosition - pointerDirection * m_PointerDistance;
-            m_PointerInstance.rotation = Quaternion.LookRotation(pointerDirection, -cameraTrans.forward);
-        }
+            // Проверяем, достаточно ли близко камера смотрит на anchor
+            bool isLookingAtAnchor = Vector3.Dot(cameraForward, directionToAnchor) >= m_LookThreshold;
 
-        private void OnDisable()
-        {
-            // Clean up the pointer instance when the component is disabled.
-            if (m_PointerInstance != null)
+            if (isLookingAtAnchor)
             {
+                if (m_PointerInstance == null)
+                {
+                    // Создаем pointer, если он еще не создан
+                    m_PointerInstance = Instantiate(m_PointerPrefab).transform;
+                }
+
+                // Вычисляем направление pointer
+                var directionInScreenSpace = cameraTrans.InverseTransformDirection(directionToAnchor);
+                directionInScreenSpace.z = 0f;
+                var pointerDirection = cameraTrans.TransformDirection(directionInScreenSpace).normalized;
+
+                // Размещаем pointer
+                m_PointerInstance.position = anchorPosition - pointerDirection * m_PointerDistance;
+                m_PointerInstance.rotation = Quaternion.LookRotation(pointerDirection, -cameraTrans.forward);
+            }
+            else if (m_PointerInstance != null)
+            {
+                // Удаляем pointer, если он есть, но камера не смотрит на anchor
                 Destroy(m_PointerInstance.gameObject);
                 m_PointerInstance = null;
             }

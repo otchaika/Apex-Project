@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class TeleportWithAnchorAndPlaneRotation : MonoBehaviour
+public class Teleportation : MonoBehaviour
 {
     [Header("Teleportation Settings")]
     public TeleportationAnchor TeleportAnchor; // Точка телепортации
     public TeleportationProvider TeleportProvider; // Провайдер телепортации
     public Transform XROrigin; // XR Origin для управления позицией и ротацией
+    public CanvasGroup CanvasGroup;
 
     [Header("Planes")]
     public Transform CurrentPlane; // Текущая плоскость, на которой находится игрок
@@ -40,46 +41,60 @@ public class TeleportWithAnchorAndPlaneRotation : MonoBehaviour
 
         if (TeleportAnchor != null && TeleportProvider != null && XROrigin != null && CurrentPlane != null && TargetPlane != null && Anchor != null)
         {
-            // Сохраняем текущую позицию игрока на текущей плоскости
-            Vector3 localPlayerPosition = CurrentPlane.InverseTransformPoint(XROrigin.position);
-
-            // Переводим позицию игрока на целевую плоскость
-            Vector3 worldPositionOnTargetPlane = TargetPlane.TransformPoint(localPlayerPosition);
-
-            // Устанавливаем Anchor в соответствующую точку на целевой плоскости
-            Anchor.position = worldPositionOnTargetPlane;
-
-            Debug.Log($"Anchor перемещён в позицию {Anchor.position} на целевой плоскости.");
-
-            // Вычисляем ротацию игрока относительно текущей плоскости
-            float currentPlayerRotationY = GetRelativeRotationY(XROrigin, CurrentPlane);
-
-            // Вычисляем новую ротацию на целевой плоскости
-            float targetRotationY = TargetPlane.eulerAngles.y + currentPlayerRotationY;
-
-            // Перемещаем игрока (XR Origin)
-            Vector3 destinationPosition = TeleportAnchor.transform.position;
-
-            TeleportRequest teleportRequest = new TeleportRequest
-            {
-                destinationPosition = destinationPosition,
-                requestTime = Time.time
-            };
-            TeleportProvider.QueueTeleportRequest(teleportRequest);
-
-            // Применяем новую ротацию
-            if (EnableRotation)
-            {
-                ApplyRotation(targetRotationY);
-            }
-
-            Debug.Log($"Телепортация выполнена в позицию {destinationPosition}" +
-                      (EnableRotation ? $" с ротацией {targetRotationY}°" : ""));
+            StartCoroutine(FadeInThenTeleport());
         }
         else
         {
             Debug.LogWarning("Не все необходимые объекты назначены!");
         }
+    }
+
+    private IEnumerator FadeInThenTeleport()
+    {
+        // Запуск плавного появления
+       // yield return StartCoroutine(FadeIn());
+        
+
+        // После завершения FadeIn продолжаем телепортацию
+        Debug.Log("FadeIn завершён, начинаем телепортацию...");
+
+        // Сохраняем текущую позицию игрока на текущей плоскости
+        Vector3 localPlayerPosition = CurrentPlane.InverseTransformPoint(XROrigin.position);
+
+        // Переводим позицию игрока на целевую плоскость
+        Vector3 worldPositionOnTargetPlane = TargetPlane.TransformPoint(localPlayerPosition);
+
+        // Устанавливаем Anchor в соответствующую точку на целевой плоскости
+        Anchor.position = worldPositionOnTargetPlane;
+
+        Debug.Log($"Anchor перемещён в позицию {Anchor.position} на целевой плоскости.");
+
+        // Вычисляем ротацию игрока относительно текущей плоскости
+        float currentPlayerRotationY = GetRelativeRotationY(XROrigin, CurrentPlane);
+
+        // Вычисляем новую ротацию на целевой плоскости
+        float targetRotationY = TargetPlane.eulerAngles.y + currentPlayerRotationY;
+
+        // Перемещаем игрока (XR Origin)
+        Vector3 destinationPosition = TeleportAnchor.transform.position;
+
+        TeleportRequest teleportRequest = new TeleportRequest
+        {
+            destinationPosition = destinationPosition,
+            requestTime = Time.time
+        };
+        TeleportProvider.QueueTeleportRequest(teleportRequest);
+        // Применяем новую ротацию
+        if (EnableRotation)
+        {
+            ApplyRotation(targetRotationY);
+        }
+
+        // Запускаем плавное исчезновение после телепортации
+        yield return StartCoroutine(FadeOut());
+
+        Debug.Log($"Телепортация выполнена в позицию {destinationPosition}" +
+                  (EnableRotation ? $" с ротацией {targetRotationY}°" : ""));
     }
 
     private float GetRelativeRotationY(Transform xrOrigin, Transform plane)
@@ -94,5 +109,23 @@ public class TeleportWithAnchorAndPlaneRotation : MonoBehaviour
         // Устанавливаем новую ротацию XR Origin
         Vector3 currentEulerAngles = XROrigin.eulerAngles;
         XROrigin.rotation = Quaternion.Euler(currentEulerAngles.x, targetRotationY, currentEulerAngles.z);
+    }
+
+    private IEnumerator FadeIn()
+    {
+        while (CanvasGroup.alpha < 1)
+        {
+            CanvasGroup.alpha += Time.deltaTime; // Скорость затухания
+            yield return null; // Ждать следующий кадр
+        }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        while (CanvasGroup.alpha > 0)
+        {
+            CanvasGroup.alpha -= Time.deltaTime; // Скорость затухания
+            yield return null; // Ждать следующий кадр
+        }
     }
 }
