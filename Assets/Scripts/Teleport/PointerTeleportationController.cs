@@ -51,10 +51,7 @@ public class TeleportationWithPointer : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-        Debug.Log($"[LATE UPDATE] Global Position: {xrOrigin.position}, Rotation: {xrOrigin.eulerAngles}");
-    }
+
 
     private void UpdatePointer()
     {

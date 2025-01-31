@@ -56,12 +56,17 @@ public class PaintingManager : MonoBehaviour
             Mathf.Clamp01(color1.a * inverseMix + color2.a * mixAmount)
         );
     }
-    void FinishPainting(InputAction.CallbackContext context)
+     void FinishPainting(InputAction.CallbackContext context)
     {
         Debug.Log("A pressed");
-   
-        animatePaintings?.Invoke();
+        InvokeFinishPainting();
+        //animatePaintings?.Invoke();
 
+    }
+    //for possibility to reach the animation trigger from event listener
+    public void InvokeFinishPainting()
+    {
+        animatePaintings?.Invoke();
     }
 
 

@@ -16,6 +16,8 @@ TagManager:
   - Pigments
   - Environement
   - Waypoint
+  - Campfire
+  - CaveWoman
   layers:
   - Default
   - TransparentFX
