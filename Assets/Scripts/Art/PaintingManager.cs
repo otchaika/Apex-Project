@@ -29,8 +29,8 @@ public class PaintingManager : MonoBehaviour
         Debug.Log("manager swapped color");
         if (hand=="left")
         {
-            curColorLeft = color;
-            leftFinger.color = color;
+            curColorLeft = BlendAdditive(curColorLeft, color, 0.5f);
+            leftFinger.color = curColorLeft;
         }
         if (hand == "right") { 
 

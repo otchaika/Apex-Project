@@ -98,7 +98,7 @@ public class NPCStateMachine
 
         public override void Enter()
         {
-            anim.SetTrigger("DoIdle"); // Triggers idle animation
+            anim.SetBool("DoIdle", true); // Triggers idle animation
             rb.velocity = Vector3.zero; // Stops movement
             rb.angularVelocity = Vector3.zero;
 
@@ -119,7 +119,7 @@ public class NPCStateMachine
 
         public override void Exit()
         {
-            anim.ResetTrigger("DoIdle"); // Resets idle animation trigger
+            anim.SetBool("DoIdle", false); // Resets idle animation trigger
             base.Exit();
         }
     }
@@ -140,7 +140,7 @@ public class NPCStateMachine
 
         public override void Enter()
         {
-            anim.SetTrigger("DoWalk"); // Triggers walking animation
+            anim.SetBool("DoWalk", true); // Triggers walking animation
 
             if (currentWaypoint == null)
             {
@@ -191,7 +191,7 @@ public class NPCStateMachine
 
         public override void Exit()
         {
-            anim.ResetTrigger("DoWalk"); // Resets walking animation trigger
+            anim.SetBool("DoWalk", false); // Resets walking animation trigger
             base.Exit();
         }
     }

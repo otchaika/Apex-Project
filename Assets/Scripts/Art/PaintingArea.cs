@@ -11,7 +11,7 @@ public class PaintArea : MonoBehaviour
     public GameObject rightFinger;
     public Texture2D maskTexture;
     public Color paintColor = Color.red;
-    public int brushSize = 10;
+    public int brushSize = 5;
     public Material mat;
     public PaintingManager manager;
     public Animator anim;
@@ -26,6 +26,7 @@ public class PaintArea : MonoBehaviour
         // Initialize the mask texture
         maskTexture = CreateMaskTexture(1024, 1024);
         meshRenderer = GetComponent<Renderer>();
+        brushSize = 15;
     }
     private void StartAnimating()
     {
