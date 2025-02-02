@@ -23,6 +23,8 @@ public class PaintingManager : MonoBehaviour
     {
         finishRef.action.Enable();
         finishRef.action.performed += FinishPainting;
+        leftFinger.color = curColorLeft;
+        rightFinger.color = curColorRight; 
     }
     public void SwapColor(Color color, string hand)
     {
