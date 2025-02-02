@@ -18,6 +18,7 @@ TagManager:
   - Waypoint
   - Campfire
   - CaveWoman
+  - Floor
   layers:
   - Default
   - TransparentFX

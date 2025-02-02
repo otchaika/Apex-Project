@@ -3,7 +3,19 @@ guid: 617b0e44ea9d66340bec4304b34e2e36
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - Herb_grinding: {instanceID: 0}
+  - Coal_grinding: {instanceID: 0}
+  - Clay_grinding: {instanceID: 0}
+  - Pigments: {instanceID: 0}
+  - Picking: {instanceID: 0}
+  - Paitning: {instanceID: 0}
+  - PaintSwapper: {instanceID: 0}
+  - BrushAttaching: {instanceID: 0}
+  - FullyAssembeled: {instanceID: 0}
+  - Dropped: {instanceID: 0}
+  - Water: {instanceID: 0}
+  - Walking: {fileID: 8300000, guid: 6e7468c9f73383e498bbc55c7ffad795, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
