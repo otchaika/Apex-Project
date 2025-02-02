@@ -19,6 +19,7 @@ public class PaintArea : MonoBehaviour
     [SerializeField] private InputActionReference rightTriggerRef;
     private Color curColor;
     private Renderer meshRenderer;
+    public Renderer skinRenderer;
 
     private void Awake()
     {
@@ -26,12 +27,13 @@ public class PaintArea : MonoBehaviour
         // Initialize the mask texture
         maskTexture = CreateMaskTexture(1024, 1024);
         meshRenderer = GetComponent<Renderer>();
-        brushSize = 15;
     }
     private void StartAnimating()
     {
         if (anim != null)
         {
+            skinRenderer.enabled = true;
+            meshRenderer.enabled = false;
             anim.SetBool("isAnimating", true);
         }
         
