@@ -11,7 +11,7 @@ public class SFXManager : MonoBehaviour
     [SerializeField] private AudioClip Clay_grinding;
     [SerializeField] private AudioClip Pigments;
     [SerializeField] private AudioClip Picking;
-    [SerializeField] private AudioClip Paitning;
+    [SerializeField] private AudioClip Painting;
     [SerializeField] private AudioClip PaintSwapper;
     [SerializeField] private AudioClip BrushAttaching;
     [SerializeField] private AudioClip FullyAssembeled;
@@ -41,12 +41,12 @@ public class SFXManager : MonoBehaviour
         else if (collision.gameObject.CompareTag("Clay"))
         {
             sfx.clip = Clay_grinding;
-            sfx.PlayOneShot(sfx.clip, 0.25f);
+            sfx.PlayOneShot(sfx.clip, 0.75f);
         }
         else if (collision.gameObject.CompareTag("Water"))
         {
             sfx.clip = Water;
-            sfx.PlayOneShot(sfx.clip, 2f);
+            sfx.PlayOneShot(sfx.clip, 1f);
         }
         else if (collision.gameObject.CompareTag("Environement"))
         {
@@ -56,45 +56,24 @@ public class SFXManager : MonoBehaviour
                 sfx.PlayOneShot(sfx.clip);
             }
         }
-        else if (collision.gameObject.CompareTag("PainArea"))
+        else if (collision.gameObject.CompareTag("PaintArea"))
         {
 
-            sfx.clip = Paitning;
+            sfx.clip = Painting;
             sfx.PlayOneShot(sfx.clip);
         }
         else if (collision.gameObject.CompareTag("PaintingFinger"))
         {
-
             sfx.clip = Picking;
+            sfx.PlayOneShot(sfx.clip, 0.5f);
+        }         
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Pigments"))
+        {
+            sfx.clip = Pigments;
             sfx.PlayOneShot(sfx.clip, 0.25f);
         }
-        else if (collision.gameObject.CompareTag("Floor"))
-        {
-            if (collision.relativeVelocity.magnitude > .2)
-            {
-                if (!sfx.isPlaying)
-                {
-                    sfx.mute = false;
-                    sfx.loop = true;
-                    sfx.clip = Walking;
-                    sfx.PlayOneShot(sfx.clip);
-                }
-            }
-            if (collision.relativeVelocity.magnitude < .2)
-            {
-                sfx.mute = false;
-                sfx.loop = true;
-                sfx.Stop();
-            }
-        }
-
-                void OnTriggerEnter(Collider other)
-                {
-                    if (other.gameObject.CompareTag("Pigments"))
-                    {
-                        sfx.clip = Pigments;
-                        sfx.PlayOneShot(sfx.clip, 0.25f);
-                    }
-                }
     }
 }

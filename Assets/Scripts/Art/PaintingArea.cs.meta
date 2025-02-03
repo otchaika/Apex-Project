@@ -3,7 +3,20 @@ guid: bdfcfb6189f2ce44ebcd94483f66050b
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - leftController: {instanceID: 0}
+  - rightController: {instanceID: 0}
+  - leftFinger: {instanceID: 0}
+  - rightFinger: {instanceID: 0}
+  - maskTexture: {instanceID: 0}
+  - mat: {instanceID: 0}
+  - manager: {instanceID: 0}
+  - anim: {instanceID: 0}
+  - leftTriggerRef: {instanceID: 0}
+  - rightTriggerRef: {instanceID: 0}
+  - skinRenderer: {instanceID: 0}
+  - saveTexture: {instanceID: 0}
+  - Painting: {fileID: 8300000, guid: ba363e38907076649abe75a6eaf05da0, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

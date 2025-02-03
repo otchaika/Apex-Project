@@ -20,7 +20,13 @@ public class PaintArea : MonoBehaviour
     private Color curColor;
     private Renderer meshRenderer;
     public Renderer skinRenderer;
-    public SaveTexture saveTexture;
+
+    [SerializeField] private AudioClip Paint;
+    AudioSource Painting;
+    void Start()
+    {
+        Painting = GetComponent<AudioSource>();
+    }
     private void Awake()
     {
         manager.animatePaintings += StartAnimating;
@@ -36,7 +42,7 @@ public class PaintArea : MonoBehaviour
             meshRenderer.enabled = false;
             anim.SetBool("isAnimating", true);
         }
-        
+
     }
     private Texture2D CreateMaskTexture(int width, int height)
     {
@@ -82,11 +88,16 @@ public class PaintArea : MonoBehaviour
             {
                 curColor = manager.curColorLeft;
             }
-                if (triggerRef == rightTriggerRef)
-                {
-                    curColor = manager.curColorRight;
-                }
+            if (triggerRef == rightTriggerRef)
+            {
+                curColor = manager.curColorRight;
+            }
             strength = triggerRef.action.ReadValue<float>();
+            if (!Painting.isPlaying)
+            {
+            Painting.clip = Paint;
+            Painting.Play(0);
+            }
             // Get the collision contact point
             Vector3 contactPoint = controllerCollider.ClosestPointOnBounds(transform.position);
             PaintOnTexture(contactPoint);
@@ -95,7 +106,7 @@ public class PaintArea : MonoBehaviour
     //Brush collision
     private void HandleBrushHairCollision(Collider brushCollider)
     {
-        strength = 1f; 
+        strength = 1f;
         curColor = manager.curColorBrush;
         Vector3 contactPoint = brushCollider.ClosestPointOnBounds(transform.position);
         PaintOnTexture(contactPoint);
