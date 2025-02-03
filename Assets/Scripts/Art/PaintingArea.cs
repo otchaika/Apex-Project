@@ -20,7 +20,7 @@ public class PaintArea : MonoBehaviour
     private Color curColor;
     private Renderer meshRenderer;
     public Renderer skinRenderer;
-
+    public SaveTexture saveTexture;
     private void Awake()
     {
         manager.animatePaintings += StartAnimating;
