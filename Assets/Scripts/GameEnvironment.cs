@@ -17,7 +17,6 @@ public class GameEnvironment : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-
             DontDestroyOnLoad(this.gameObject);
             RefreshWaypoints(); // Обновляем waypoints при создании
         }

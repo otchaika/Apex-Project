@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -14,6 +15,7 @@ public class TeleportationWithPointer : MonoBehaviour
     [SerializeField] private TeleportationAnchor teleportAnchor;
     [SerializeField] private Transform xrOrigin;
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] public float fadeDuration = 1.0f;
 
     [Header("Planes")]
     [SerializeField] private Transform currentPlane;
@@ -28,6 +30,11 @@ public class TeleportationWithPointer : MonoBehaviour
 
     private Transform pointerInstance;
     private bool isCameraInTrigger = false;
+
+    private void Awake()
+    {
+        StartCoroutine(FadeOut());
+    }
 
     private void OnEnable()
     {
@@ -50,8 +57,6 @@ public class TeleportationWithPointer : MonoBehaviour
             DestroyPointer();
         }
     }
-
-
 
     private void UpdatePointer()
     {
@@ -99,19 +104,18 @@ public class TeleportationWithPointer : MonoBehaviour
     {
         if (pointerInstance != null && isCameraInTrigger)
         {
-            PerformTeleport();
+            StartCoroutine(PerformTeleport());
         }
     }
 
-    private void PerformTeleport()
+    private IEnumerator PerformTeleport()
     {
         Debug.Log("Teleport started");
-
-        // Локальная позиция на текущей плоскости
+        yield return StartCoroutine(FadeIn());
+        
+        yield return new WaitForSeconds(0.5f);
+        
         Vector3 localPlayerPositionBefore = currentPlane.InverseTransformPoint(xrOrigin.position);
-        Debug.Log($"[BEFORE TP] Global Position: {xrOrigin.position}, Local to CurrentPlane: {localPlayerPositionBefore}, Rotation: {xrOrigin.eulerAngles}");
-
-        // Вычисляем новую позицию на целевой плоскости
         Vector3 worldPositionOnTargetPlane = targetPlane.TransformPoint(localPlayerPositionBefore);
         anchor.position = worldPositionOnTargetPlane;
 
@@ -120,30 +124,15 @@ public class TeleportationWithPointer : MonoBehaviour
 
         Vector3 destinationPosition = teleportAnchor.transform.position;
 
-        // Отключаем CharacterController перед телепортацией (если есть)
         CharacterController controller = xrOrigin.GetComponent<CharacterController>();
-        if (controller != null)
-        {
-            controller.enabled = false;
-        }
+        if (controller != null) controller.enabled = false;
 
-        // Телепортируем игрока
         xrOrigin.position = destinationPosition;
+        if (enableRotation) ApplyRotation(targetRotationY);
 
-        if (enableRotation)
-        {
-            ApplyRotation(targetRotationY);
-        }
+        if (controller != null) controller.enabled = true;
 
-        // Включаем CharacterController обратно
-        if (controller != null)
-        {
-            controller.enabled = true;
-        }
-
-        // Лог финальной позиции
-        Vector3 localPlayerPositionAfter = targetPlane.InverseTransformPoint(xrOrigin.position);
-        Debug.Log($"[AFTER TP] Global Position: {xrOrigin.position}, Local to TargetPlane: {localPlayerPositionAfter}, Rotation: {xrOrigin.eulerAngles}");
+        yield return StartCoroutine(FadeOut());
     }
 
     private float GetRelativeRotationY(Transform xrOrigin, Transform plane)
@@ -156,7 +145,7 @@ public class TeleportationWithPointer : MonoBehaviour
         Vector3 currentEulerAngles = xrOrigin.eulerAngles;
         xrOrigin.rotation = Quaternion.Euler(currentEulerAngles.x, targetRotationY, currentEulerAngles.z);
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("MainCamera"))
@@ -174,5 +163,33 @@ public class TeleportationWithPointer : MonoBehaviour
             Debug.Log("Camera exited trigger zone");
             DestroyPointer();
         }
+    }
+    
+    public IEnumerator FadeIn()
+    {
+        Debug.Log("Запуск FadeIn");
+        float elapsedTime = 0;
+        canvasGroup.blocksRaycasts = true; 
+        while (canvasGroup.alpha < 1)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Clamp01(elapsedTime / fadeDuration);
+            yield return null;
+        }
+        Debug.Log("FadeIn завершён");
+    }
+
+    public IEnumerator FadeOut()
+    {
+        Debug.Log("Запуск FadeOut");
+        float elapsedTime = 0;
+        while (canvasGroup.alpha > 0)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Clamp01(1 - elapsedTime / fadeDuration);
+            yield return null;
+        }
+        canvasGroup.blocksRaycasts = false; 
+        Debug.Log("FadeOut завершён");
     }
 }

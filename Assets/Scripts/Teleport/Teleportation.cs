@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class Teleportation : MonoBehaviour
 {
+    FadeIn_Out fadeIn_Out;
     [Header("Teleportation Settings")]
     public TeleportationAnchor TeleportAnchor; // Точка телепортации
     public TeleportationProvider TeleportProvider; // Провайдер телепортации
@@ -25,6 +26,8 @@ public class Teleportation : MonoBehaviour
     [Header("Input Settings")]
     public InputActionReference TeleportActivationButton; // Ссылка на Input Action для активации телепортации
 
+
+
     private void OnEnable()
     {
         TeleportActivationButton.action.started += OnTeleportButtonPressed;
@@ -41,7 +44,8 @@ public class Teleportation : MonoBehaviour
 
         if (TeleportAnchor != null && TeleportProvider != null && XROrigin != null && CurrentPlane != null && TargetPlane != null && Anchor != null)
         {
-            StartCoroutine(FadeInThenTeleport());
+            FadeInThenTeleport();
+            //StartCoroutine(FadeInThenTeleport());
         }
         else
         {
@@ -49,12 +53,11 @@ public class Teleportation : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeInThenTeleport()
+    private void FadeInThenTeleport()
     {
         // Запуск плавного появления
        // yield return StartCoroutine(FadeIn());
-        
-
+       
         // После завершения FadeIn продолжаем телепортацию
         Debug.Log("FadeIn завершён, начинаем телепортацию...");
 
@@ -68,6 +71,7 @@ public class Teleportation : MonoBehaviour
         Anchor.position = worldPositionOnTargetPlane;
 
         Debug.Log($"Anchor перемещён в позицию {Anchor.position} на целевой плоскости.");
+        StartCoroutine(fadeIn_Out.FadeIn());
 
         // Вычисляем ротацию игрока относительно текущей плоскости
         float currentPlayerRotationY = GetRelativeRotationY(XROrigin, CurrentPlane);
@@ -91,8 +95,8 @@ public class Teleportation : MonoBehaviour
         }
 
         // Запускаем плавное исчезновение после телепортации
-        yield return StartCoroutine(FadeOut());
-
+        //yield return StartCoroutine(FadeOut());
+        StartCoroutine(fadeIn_Out.FadeOut());
         Debug.Log($"Телепортация выполнена в позицию {destinationPosition}" +
                   (EnableRotation ? $" с ротацией {targetRotationY}°" : ""));
     }
